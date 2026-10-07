@@ -562,3 +562,121 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 @media (prefers-reduced-motion: reduce) {
   .story-item.new .story-ring::before, .story-item.new .story-ring::after, .story-today, .story-ava::after { animation: none; }
 }
+
+/* ---------- Превью видео в свёрнутом посте ---------- */
+.video-peek { position: relative; display: block; width: calc(100% - 32px); height: 150px; margin: 0 16px 14px; border-radius: 12px; overflow: hidden; color: #fff; text-align: left; isolation: isolate; }
+.post.open .video-peek { display: none; }
+.video-peek:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.vp-frame { position: absolute; inset: 0; z-index: -1; background: radial-gradient(ellipse at 68% 30%, #5b6d7a 0%, #26343e 50%, #0f171d 100%); transition: transform .5s cubic-bezier(.2, .8, .2, 1); }
+.video-peek:hover .vp-frame { transform: scale(1.05); }
+.vp-frame::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.1) 55%, rgba(0,0,0,.35) 100%); }
+.vp-brand, .vp-title { z-index: 1; }
+.vp-brand { position: absolute; left: 16px; top: 14px; display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; opacity: .9; }
+.vp-brand i { width: 14px; height: 14px; border-radius: 4px; background: var(--primary); }
+.vp-title { position: absolute; left: 16px; top: 38px; max-width: 42%; font-size: 17px; font-weight: 700; line-height: 1.2; }
+/* силуэт спикера, как в кадре лекции */
+.vp-speaker { position: absolute; right: 16%; bottom: 0; width: 130px; height: 130px;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(214,186,165,.85) 0 21px, transparent 23px),
+    radial-gradient(ellipse 30px 26px at 50% 28%, rgba(30,26,24,.9) 0 100%, transparent 101%),
+    radial-gradient(ellipse 62px 44px at 50% 100%, rgba(230,232,236,.75) 0 100%, transparent 101%);
+  filter: blur(3px); opacity: .7; }
+.vp-play { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.22); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,.4); transition: transform .25s cubic-bezier(.3, 1.6, .5, 1), background .2s; }
+.vp-play::before { content: ""; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid rgba(255,255,255,.5); animation: vp-pulse 2s ease-out infinite; }
+@keyframes vp-pulse { from { transform: scale(.9); opacity: 1; } to { transform: scale(1.5); opacity: 0; } }
+.vp-play svg { width: 22px; height: 22px; fill: #fff; stroke: none; margin-left: 3px; }
+.video-peek:hover .vp-play { transform: scale(1.12); background: var(--primary); border-color: var(--primary); }
+.vp-dur { position: absolute; right: 10px; bottom: 12px; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 6px; background: rgba(0,0,0,.6); font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.vp-dur svg { width: 12px; height: 12px; stroke-width: 3; color: #4ade80; }
+.vp-cta { position: absolute; left: 16px; bottom: 12px; font-size: 12px; font-weight: 600; opacity: 0; transform: translateY(6px); transition: opacity .2s, transform .2s; }
+.video-peek:hover .vp-cta, .video-peek:focus-visible .vp-cta { opacity: 1; transform: none; }
+.vp-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,.25); }
+.vp-bar i { display: block; height: 100%; background: var(--primary); }
+
+@media (max-width: 640px) {
+  .video-peek { height: 130px; }
+  .vp-title { font-size: 15px; max-width: 50%; }
+  .vp-speaker { right: 4%; transform: scale(.85); transform-origin: bottom; }
+  .vp-cta { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vp-play::before { animation: none; }
+}
+
+/* ---------- Модули ---------- */
+.days-head { justify-content: space-between; align-items: center; gap: 10px 16px; }
+.days-head > div { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+
+.mod-tabs { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+.mod-tabs::-webkit-scrollbar { display: none; }
+.mod-tab { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 7px; padding: 5px 10px 5px 5px; border-radius: 999px; border: 1px solid var(--border); background: var(--surface); font-size: 12px; font-weight: 600; color: #334155; transition: background .15s, border-color .15s, color .15s; }
+.mod-tab:hover { border-color: var(--primary-100); background: var(--primary-50); }
+.mod-tab small { font-size: 11px; font-weight: 500; color: var(--muted); }
+.mod-tab-ic { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--bg); border: 1px solid var(--border); font-size: 11px; font-weight: 700; }
+.mod-tab-ic svg { width: 12px; height: 12px; stroke-width: 2.6; }
+.mod-tab.done .mod-tab-ic { background: var(--green); border-color: var(--green); color: #fff; }
+.mod-tab.locked { color: var(--muted); }
+.mod-tab.locked .mod-tab-ic { color: #94a3b8; }
+.mod-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 30%, transparent); }
+.mod-tab.active small { color: rgba(255,255,255,.8); }
+.mod-tab.active .mod-tab-ic { background: rgba(255,255,255,.2); border-color: transparent; color: #fff; }
+
+.days-list { justify-content: flex-start; gap: 6px; }
+.mod-group { position: relative; flex: 0 0 auto; display: flex; flex-direction: column; padding: 8px 10px 4px; border-radius: 14px; transition: background .25s; scroll-margin-inline: 8px; }
+.mod-group + .mod-group::before { content: ""; position: absolute; left: -4px; top: 14px; bottom: 14px; border-left: 1px dashed var(--border); }
+.mod-group.active { background: color-mix(in srgb, var(--primary) 6%, var(--surface)); }
+.mod-group.active::before, .mod-group.active + .mod-group::before { display: none; }
+.mod-head { width: 0; min-width: 100%; display: flex; align-items: baseline; gap: 6px; font-size: 11px; white-space: nowrap; }
+.mod-head b { color: var(--primary-600); text-transform: uppercase; letter-spacing: .04em; font-size: 10px; flex-shrink: 0; }
+.mod-head span { color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+.mod-group.done .mod-head b { color: var(--green); }
+.mod-group.locked .mod-head b { color: #94a3b8; }
+.mod-bar { height: 3px; border-radius: 2px; background: var(--border); margin: 6px 0 8px; overflow: hidden; }
+.mod-bar i { display: block; height: 100%; border-radius: 2px; background: var(--primary); transition: width .4s; }
+.mod-group.done .mod-bar i { background: var(--green); }
+.mod-days { display: flex; gap: 10px; }
+
+/* хлебные крошки над заголовком дня */
+#dayLabel { display: flex; align-items: center; min-width: 0; color: var(--text); }
+.crumb-mod { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.crumb-sep { margin: 0 6px; color: var(--muted); }
+
+/* модуль в интро сторис */
+.sv-mod { font-size: 13px; font-weight: 600; color: rgba(255,255,255,.85); }
+
+@media (max-width: 640px) {
+  .days-head { flex-direction: column; align-items: stretch; }
+  .mod-days { gap: 8px; }
+}
+
+/* ---------- Модули в боковом меню ---------- */
+.nav-sub { position: relative; display: flex; flex-direction: column; gap: 2px; margin: 2px 0 6px 25px; padding-left: 10px; border-left: 2px solid var(--border); }
+.nav-course { padding: 6px 8px 4px; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-mod { position: relative; display: flex; align-items: flex-start; gap: 10px; padding: 7px 8px; border-radius: 9px; color: #334155; font-size: 13px; transition: background .15s; }
+.nav-mod:hover { background: var(--bg); }
+.nav-mod-text { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.nav-mod-text b { font-weight: 600; line-height: 1.3; }
+.nav-mod-text small { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nav-mod-dot { position: relative; width: 18px; height: 18px; margin-top: 1px; border-radius: 50%; border: 2px solid #cbd5e1; background: var(--surface); display: grid; place-items: center; flex-shrink: 0; }
+.nav-mod-dot svg { width: 10px; height: 10px; stroke-width: 3; }
+.nav-mod.done .nav-mod-dot { background: var(--green); border-color: var(--green); color: #fff; }
+.nav-mod.locked { color: var(--muted); }
+.nav-mod.locked .nav-mod-dot { border-style: dashed; color: #94a3b8; }
+.nav-mod.locked .nav-mod-dot svg { stroke-width: 2.4; width: 9px; height: 9px; }
+
+/* модуль, в котором человек учится сейчас */
+.nav-mod.learning { background: var(--primary-50); }
+.nav-mod.learning .nav-mod-text b, .nav-mod.learning .nav-mod-text small { color: var(--primary-600); }
+.nav-mod.learning .nav-mod-dot { border-color: var(--primary); background: var(--primary); box-shadow: 0 0 0 3px var(--primary-100); }
+.nav-mod.learning .nav-mod-dot::after { content: ""; position: absolute; inset: -5px; border-radius: 50%; border: 2px solid var(--primary); animation: nav-pulse 2s ease-out infinite; }
+@keyframes nav-pulse { from { transform: scale(.8); opacity: .8; } to { transform: scale(1.6); opacity: 0; } }
+.nav-mod-bar { display: block; height: 3px; margin-top: 6px; border-radius: 2px; background: var(--primary-100); overflow: hidden; }
+.nav-mod-bar i { display: block; height: 100%; background: var(--primary); border-radius: 2px; transition: width .4s; }
+
+/* модуль, который сейчас открыт на странице */
+.nav-mod.viewing::before { content: ""; position: absolute; left: -12px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--primary); }
+.nav-mod.viewing:not(.learning) .nav-mod-text b { color: var(--text); }
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-mod.learning .nav-mod-dot::after { animation: none; }
+}

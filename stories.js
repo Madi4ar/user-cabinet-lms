@@ -33,9 +33,10 @@ const Stories = (() => {
   const total = () => TEMPLATE.reduce((s, e) => s + e.min, 0);
 
   function subtitle(d) {
-    if (d.locked) return `Откроется после дня ${d.n - 1}`;
-    if (dayComplete(d)) return 'Выполнено';
-    return (d.n === CURRENT_DAY ? 'Сегодня · ' : '') + fmtMin(total());
+    const mod = `Модуль ${moduleOf(d.n).n} · `;
+    if (d.locked) return `${mod}Откроется после дня ${d.n - 1}`;
+    if (dayComplete(d)) return `${mod}Выполнено`;
+    return mod + (d.n === CURRENT_DAY ? 'Сегодня · ' : '') + fmtMin(total());
   }
 
   function cardEl(d) {
@@ -65,6 +66,7 @@ const Stories = (() => {
           ${blobs}
           <div class="sv-content">
             <span class="a sv-chip">${chip}</span>
+            <span class="a sv-mod">Модуль ${moduleOf(d.n).n} · ${moduleOf(d.n).title}</span>
             <div class="a sv-bignum">${String(d.n).padStart(2, '0')}</div>
             <h2 class="a">${d.title}</h2>
             <p class="a">${today ? 'Сегодня' : 'В этот день'} вас ждёт ${TEMPLATE.length} шагов · ${fmtMin(total())}</p>

@@ -18,12 +18,9 @@
       </a>
       <nav class="nav">
         <a class="nav-item active" href="#"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>Мое обучение</a>
+        <div class="nav-sub" id="navModules" aria-label="Модули текущего курса"></div>
         <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg>Мои курсы</a>
-        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Мероприятия</a>
-        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="6"/><circle cx="12" cy="10" r="2.5"/><path d="M8.5 15L7 21l5-2 5 2-1.5-6"/></svg>Сертификаты</a>
         <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Профиль</a>
-        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>Сообщения</a>
-        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>Мои достижения</a>
       </nav>
       <a class="help" href="#">
         <span class="help-icon">?</span>
@@ -58,7 +55,7 @@
           <div class="course-thumb"><span>Формативное<br>оценивание</span></div>
           <div class="course-meta">
             <h1>Формативное оценивание</h1>
-            <div class="meta-row"><span>80 часов</span><i></i><span>10 учебных дней</span><span class="pill pill-green">В процессе</span></div>
+            <div class="meta-row"><span>80 часов</span><i></i><span>4 модуля</span><i></i><span>10 учебных дней</span><span class="pill pill-green">В процессе</span></div>
           </div>
           <div class="progress">
             <div class="ring" id="ring"><span id="ringText">72%</span></div>
@@ -68,8 +65,11 @@
 
         <section class="days">
           <div class="days-head">
-            <b>Истории дней</b>
-            <small>Нажмите на день, чтобы узнать, что вас ждёт</small>
+            <div>
+              <b>Модули и дни</b>
+              <small>Нажмите на день, чтобы узнать, что вас ждёт</small>
+            </div>
+            <nav class="mod-tabs" id="moduleTabs" aria-label="Модули курса"></nav>
           </div>
           <div class="days-row">
             <button class="days-arrow" id="prevDay" aria-label="Предыдущий день"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>

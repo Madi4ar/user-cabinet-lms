@@ -66,6 +66,15 @@ const SEED_COMMENTS = [
   [{ name: 'Ерлан Н.', text: 'Будет ли запись встречи?', time: 'вчера' }],
 ];
 
+// Модули курса и дни внутри них (нумерация дней сквозная)
+const MODULES = [
+  { n: 1, title: 'Основы формативного оценивания', days: [1, 2] },
+  { n: 2, title: 'Обратная связь и инструменты', days: [3, 4] },
+  { n: 3, title: 'Вовлечение учащихся', days: [5, 6, 7] },
+  { n: 4, title: 'Данные и рефлексия', days: [8, 9, 10] },
+];
+const moduleOf = (dayN) => MODULES.find((m) => m.days.includes(dayN));
+
 const CURRENT_DAY = 4;
 const BASE_DONE = 56; // демо: элементы курса вне дневной программы, чтобы старт был 72 из 100
 const TOTAL = 100;
@@ -123,11 +132,17 @@ function storyState(d) {
   return d.seen ? 'seen' : 'new';
 }
 
-function renderDays() {
-  $('#daysList').innerHTML = days.map((d) => {
-    const st = storyState(d);
-    const today = d.n === CURRENT_DAY;
-    return `
+function moduleState(m) {
+  const list = m.days.map((n) => days[n - 1]);
+  if (list.every(dayComplete)) return 'done';
+  if (list[0].locked) return 'locked';
+  return 'current';
+}
+
+function storyHtml(d) {
+  const st = storyState(d);
+  const today = d.n === CURRENT_DAY;
+  return `
     <button class="story-item ${st} ${d.n === selected ? 'active' : ''}" data-day="${d.n}"
       aria-label="День ${d.n}: ${d.title}${st === 'locked' ? ' (закрыт)' : ''}">
       <span class="story-ring">
@@ -138,6 +153,59 @@ function renderDays() {
       </span>
       <span class="story-label">День ${d.n}</span>
     </button>`;
+}
+
+// Боковое меню: курс и модули под «Мое обучение»; выделен модуль, в котором человек учится сейчас
+function renderNavModules(viewMod) {
+  const learningDay = days.find((d) => !d.locked && !dayComplete(d));
+  const learningMod = learningDay && moduleOf(learningDay.n);
+  $('#navModules').innerHTML = `
+    <div class="nav-course" title="Формативное оценивание">Формативное оценивание</div>
+    ${MODULES.map((m) => {
+      const st = moduleState(m);
+      const doneDays = m.days.filter((n) => dayComplete(days[n - 1])).length;
+      const learning = m === learningMod;
+      return `
+        <a href="#" class="nav-mod ${st} ${learning ? 'learning' : ''} ${m === viewMod ? 'viewing' : ''}" data-mod="${m.n}"
+           title="Модуль ${m.n}. ${m.title}" ${m === viewMod ? 'aria-current="true"' : ''}>
+          <span class="nav-mod-dot">${st === 'done' ? I.check : st === 'locked' ? I.lock : ''}</span>
+          <span class="nav-mod-text">
+            <b>Модуль ${m.n}</b>
+            <small>${learning ? `Сейчас: день ${learningDay.n} из ${days.length}` : m.title}</small>
+            ${learning ? `<span class="nav-mod-bar"><i style="width:${(doneDays / m.days.length) * 100}%"></i></span>` : ''}
+          </span>
+        </a>`;
+    }).join('')}`;
+}
+
+function renderDays() {
+  const activeMod = moduleOf(selected);
+  // Вкладки модулей
+  $('#moduleTabs').innerHTML = MODULES.map((m) => {
+    const st = moduleState(m);
+    const doneDays = m.days.filter((n) => dayComplete(days[n - 1])).length;
+    return `
+      <button class="mod-tab ${st} ${m === activeMod ? 'active' : ''}" data-mod="${m.n}" title="${m.title}">
+        <span class="mod-tab-ic">${st === 'done' ? I.check : st === 'locked' ? I.lock : m.n}</span>
+        <span>Модуль ${m.n}</span>
+        <small>${doneDays}/${m.days.length}</small>
+      </button>`;
+  }).join('');
+
+  renderNavModules(activeMod);
+
+  // Дни, сгруппированные по модулям
+  $('#daysList').innerHTML = MODULES.map((m) => {
+    const st = moduleState(m);
+    const doneDays = m.days.filter((n) => dayComplete(days[n - 1])).length;
+    return `
+      <div class="mod-group ${st} ${m === activeMod ? 'active' : ''}" data-mod="${m.n}">
+        <div class="mod-head" title="Модуль ${m.n}. ${m.title}">
+          <b>Модуль ${m.n}</b><span>${m.title}</span>
+        </div>
+        <div class="mod-bar"><i style="width:${(doneDays / m.days.length) * 100}%"></i></div>
+        <div class="mod-days">${m.days.map((n) => storyHtml(days[n - 1])).join('')}</div>
+      </div>`;
   }).join('');
   $('#prevDay').disabled = selected === 1;
   $('#nextDay').disabled = selected === days.length;
@@ -175,6 +243,22 @@ function commentsHtml(s) {
     </div>`).join('') || '<p class="c-empty">Пока нет комментариев. Будьте первым!</p>';
 }
 
+// Свёрнутая видеолекция: кадр видео с кнопкой Play, чтобы сразу было понятно, что это видео
+function videoPeek(j, d) {
+  return `
+    <button class="video-peek" data-act="watch" aria-label="Смотреть видеолекцию: ${d.title}">
+      <span class="vp-frame">
+        <span class="vp-brand"><i></i>Beyim Ustaz</span>
+        <span class="vp-title">${d.title}</span>
+        <span class="vp-speaker"></span>
+      </span>
+      <span class="vp-play">${I.play}</span>
+      <span class="vp-dur">${d.done[j] ? `${I.check} Просмотрено · ` : ''}15:24</span>
+      <span class="vp-cta">Смотреть видеолекцию</span>
+      <span class="vp-bar"><i style="width:${d.done[j] ? 100 : 0}%"></i></span>
+    </button>`;
+}
+
 function postHtml(el, j, d) {
   const open = d.open.has(j);
   const s = d.social[j];
@@ -189,7 +273,7 @@ function postHtml(el, j, d) {
         ${statusTag(el, j, d)}
         <span class="post-chev">${I.chevDown}</span>
       </header>
-      <p class="post-preview" data-act="toggle">${preview(el, d)}</p>
+      ${el.type === 'video' ? videoPeek(j, d) : `<p class="post-preview" data-act="toggle">${preview(el, d)}</p>`}
       <div class="post-body" id="body-${j}" ${open ? '' : 'inert'}><div class="post-inner"><div class="post-pad">${elementBody(el, j, d)}</div></div></div>
       <footer class="post-actions">
         <button class="pa ${s.liked ? 'on like' : ''}" data-act="like" aria-pressed="${s.liked}" aria-label="Нравится">${I.heart}<span>${s.likes}</span></button>
@@ -267,7 +351,8 @@ function elementBody(el, j, d) {
 
 function renderDay() {
   const d = days[selected - 1];
-  $('#dayLabel').textContent = `ДЕНЬ ${d.n}`;
+  const mod = moduleOf(d.n);
+  $('#dayLabel').innerHTML = `<span class="crumb-mod" title="${mod.title}">Модуль ${mod.n} · ${mod.title}</span><span class="crumb-sep">›</span>День ${d.n}`;
   $('#dayTitle').textContent = d.title;
   $('#dayLead').textContent = `В этом уроке мы рассмотрим тему «${d.title.toLowerCase()}», практическое применение в разных предметах и возрастных группах.`;
   $('#dayTime').textContent = fmtMin(TEMPLATE.reduce((s, e) => s + e.min, 0));
@@ -412,6 +497,10 @@ $('#elements').addEventListener('click', (e) => {
     case 'toggle':
       setOpen(post, !post.classList.contains('open'));
       break;
+    case 'watch':
+      setOpen(post, true);
+      setTimeout(() => post.querySelector('.video:not(.playing) .video-play')?.click(), 320);
+      break;
     case 'like':
       s.liked = !s.liked;
       s.likes += s.liked ? 1 : -1;
@@ -477,6 +566,24 @@ $('#daysList').addEventListener('click', (e) => {
   selected = +tab.dataset.day;
   render();
   Stories.open(selected, origin);
+});
+// Вкладка модуля: переходим к первому незавершённому открытому дню модуля
+function goToModule(m) {
+  selected = m.days.find((n) => !days[n - 1].locked && !dayComplete(days[n - 1])) ?? m.days[0];
+  render();
+  $(`.mod-group[data-mod="${m.n}"]`).scrollIntoView({ block: 'nearest', inline: 'start', behavior: 'smooth' });
+}
+$('#moduleTabs').addEventListener('click', (e) => {
+  const tab = e.target.closest('.mod-tab');
+  if (tab) goToModule(MODULES[+tab.dataset.mod - 1]);
+});
+$('#navModules').addEventListener('click', (e) => {
+  const item = e.target.closest('[data-mod]');
+  if (!item) return;
+  e.preventDefault();
+  goToModule(MODULES[+item.dataset.mod - 1]);
+  closeMenu();
+  $('.days').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 $('#prevDay').addEventListener('click', () => { if (selected > 1) { selected--; render(); } });
 $('#nextDay').addEventListener('click', () => { if (selected < days.length) { selected++; render(); } });
