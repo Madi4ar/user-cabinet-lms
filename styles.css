@@ -732,3 +732,37 @@ button.nav-mod { width: 100%; text-align: left; }
   .day-top { flex-wrap: wrap; }
   .day-top .eyebrow { flex-basis: 100%; }
 }
+
+/* ---------- Лента колонкой по центру, как у Instagram на десктопе ---------- */
+:root { --feed-w: 760px; }
+.day-card { background: none; border: 0; box-shadow: none; padding: 8px 0 0; }
+.day-main { max-width: var(--feed-w); margin: 0 auto; }
+.day-main h2 { font-size: 24px; }
+.lead { font-size: 13px; }
+.day-top { flex-wrap: wrap; row-gap: 4px; }
+.day-top .eyebrow { flex-basis: 100%; }
+.day-time { margin-right: auto; }
+
+/* медиа в посте — от края до края, как фото в Instagram */
+.post-pad { padding: 2px 14px 14px; }
+.post-pad > .video { margin: 0 -14px; border-radius: 0; aspect-ratio: 16 / 9; }
+.video-peek { width: 100%; margin: 0 0 12px; border-radius: 0; height: auto; aspect-ratio: 21 / 8; }
+.video h5 { top: 22%; max-width: 50%; font-size: 22px; }
+.video .sub { top: 64%; max-width: 45%; font-size: 12px; }
+.video-brand { top: 9%; }
+.vp-title { max-width: 50%; top: 22%; font-size: 24px; }
+.vp-brand { left: 16px; top: 16px; font-size: 13px; }
+.vp-brand i { width: 18px; height: 18px; }
+.vp-play { width: 64px; height: 64px; margin: -32px 0 0 -32px; }
+
+.zoom { flex-wrap: wrap; }
+.day-footer { flex-wrap: wrap; }
+
+/* строка автора в шапке поста — одной строкой с многоточием */
+.post-who small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.post-who small svg { display: inline; vertical-align: -2px; margin-right: 2px; }
+
+@media (max-width: 640px) {
+  .day-card { padding: 0; }
+  .day-main { max-width: none; }
+}
