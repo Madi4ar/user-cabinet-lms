@@ -12,19 +12,22 @@
   <div class="layout">
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
+      <div class="sidebar-head">
       <a class="logo" href="#">
         <span class="logo-icon"><svg viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 1 4 17.5zM13 4h5.5A1.5 1.5 0 0 1 20 5.5v12a1.5 1.5 0 0 1-1.5 1.5H13z"/></svg></span>
-        <span><b>Beyim Ustaz</b><small>LMS</small></span>
+        <span class="logo-text"><b>Beyim Ustaz</b><small>LMS</small></span>
       </a>
+      <button class="collapse-btn" id="collapseBtn" aria-label="Свернуть меню" title="Свернуть меню" aria-expanded="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16M15 10l-2 2 2 2"/></svg></button>
+      </div>
       <nav class="nav">
-        <a class="nav-item active" href="#"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>Мое обучение</a>
+        <a class="nav-item active" href="#" id="navLearning" title="Мое обучение"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg><span class="nav-label">Мое обучение</span></a>
         <div class="nav-sub" id="navModules" aria-label="Модули текущего курса"></div>
-        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg>Мои курсы</a>
-        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Профиль</a>
+        <a class="nav-item" href="#" title="Мои курсы"><svg viewBox="0 0 24 24"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg><span class="nav-label">Мои курсы</span></a>
+        <a class="nav-item" href="#" title="Профиль"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span class="nav-label">Профиль</span></a>
       </nav>
-      <a class="help" href="#">
+      <a class="help" href="#" title="Нужна помощь?">
         <span class="help-icon">?</span>
-        <span><b>Нужна помощь?</b><small>Перейти в справочный центр</small></span>
+        <span class="help-text"><b>Нужна помощь?</b><small>Перейти в справочный центр</small></span>
       </a>
     </aside>
     <div class="backdrop" id="backdrop"></div>
@@ -82,6 +85,7 @@
           <div class="day-main">
             <div class="day-top">
               <span class="eyebrow" id="dayLabel">ДЕНЬ 4</span>
+              <span class="day-time"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="dayTime"></span></span>
               <button class="toggle-all" id="toggleAll">Развернуть все</button>
             </div>
             <h2 id="dayTitle"></h2>
@@ -90,14 +94,6 @@
             <div class="day-footer" id="dayFooter"></div>
           </div>
 
-          <aside class="day-side">
-            <div class="time"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Примерное время: <span id="dayTime"></span></div>
-            <button class="plan-toggle" id="planToggle"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg><span>Скрыть план дня</span></button>
-            <div class="plan" id="plan">
-              <div class="plan-head"><b>В этом дне</b><small id="planCount"></small></div>
-              <ol class="plan-list" id="planList"></ol>
-            </div>
-          </aside>
         </section>
       </main>
     </div>

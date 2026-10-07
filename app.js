@@ -156,7 +156,39 @@ function storyHtml(d) {
 }
 
 // Боковое меню: курс и модули под «Мое обучение»; выделен модуль, в котором человек учится сейчас
+// Дерево в меню: модуль → дни → шаги дня. Раскрытие хранится здесь, чтобы переживать перерисовку.
+const navOpen = { mods: new Set(), days: new Set(), lastSelected: null };
+
+function navStepsHtml(d) {
+  return TEMPLATE.map((el, j) => `
+    <button class="nt-step ${d.done[j] ? 'done' : ''} ${!d.locked && j === d.done.findIndex((x) => !x) ? 'current' : ''}"
+      data-act="step" data-day="${d.n}" data-el="${j}" title="${el.name} · ${el.min} минут" ${d.locked ? 'disabled' : ''}>
+      <span class="nt-step-ic ${el.color}">${d.done[j] ? I.check : ICONS[el.type]}</span>
+      <span class="nt-step-name">${el.name}</span>
+    </button>`).join('');
+}
+
+function navDayHtml(d) {
+  const st = d.locked ? 'locked' : dayComplete(d) ? 'done' : '';
+  const open = navOpen.days.has(d.n);
+  return `
+    <div class="nt-day ${st} ${open ? 'open' : ''} ${d.n === selected ? 'active' : ''}" data-day="${d.n}">
+      <button class="nt-day-btn" data-act="day" data-day="${d.n}" aria-expanded="${open}" title="День ${d.n}. ${d.title}">
+        <span class="nt-day-dot">${st === 'done' ? I.check : st === 'locked' ? I.lock : d.n}</span>
+        <span class="nt-day-text"><b>День ${d.n}${d.n === CURRENT_DAY && st !== 'done' ? ' · сегодня' : ''}</b><small>${d.title}</small></span>
+        <span class="nt-chev">${I.chevDown}</span>
+      </button>
+      <div class="nt-collapse"><div class="nt-inner"><div class="nt-steps">${navStepsHtml(d)}</div></div></div>
+    </div>`;
+}
+
 function renderNavModules(viewMod) {
+  // при смене дня раскрываем его модуль и сам день
+  if (navOpen.lastSelected !== selected) {
+    navOpen.mods.add(viewMod.n);
+    navOpen.days = new Set([selected]);
+    navOpen.lastSelected = selected;
+  }
   const learningDay = days.find((d) => !d.locked && !dayComplete(d));
   const learningMod = learningDay && moduleOf(learningDay.n);
   $('#navModules').innerHTML = `
@@ -165,16 +197,21 @@ function renderNavModules(viewMod) {
       const st = moduleState(m);
       const doneDays = m.days.filter((n) => dayComplete(days[n - 1])).length;
       const learning = m === learningMod;
+      const open = navOpen.mods.has(m.n);
       return `
-        <a href="#" class="nav-mod ${st} ${learning ? 'learning' : ''} ${m === viewMod ? 'viewing' : ''}" data-mod="${m.n}"
-           title="Модуль ${m.n}. ${m.title}" ${m === viewMod ? 'aria-current="true"' : ''}>
-          <span class="nav-mod-dot">${st === 'done' ? I.check : st === 'locked' ? I.lock : ''}</span>
-          <span class="nav-mod-text">
-            <b>Модуль ${m.n}</b>
-            <small>${learning ? `Сейчас: день ${learningDay.n} из ${days.length}` : m.title}</small>
-            ${learning ? `<span class="nav-mod-bar"><i style="width:${(doneDays / m.days.length) * 100}%"></i></span>` : ''}
-          </span>
-        </a>`;
+        <div class="nt-mod ${open ? 'open' : ''}" data-mod="${m.n}">
+          <button class="nav-mod ${st} ${learning ? 'learning' : ''} ${m === viewMod ? 'viewing' : ''}" data-act="mod" data-mod="${m.n}"
+             title="Модуль ${m.n}. ${m.title}" aria-expanded="${open}">
+            <span class="nav-mod-dot">${st === 'done' ? I.check : st === 'locked' ? I.lock : ''}</span>
+            <span class="nav-mod-text">
+              <b>Модуль ${m.n}</b>
+              <small>${learning ? `Сейчас: день ${learningDay.n} из ${days.length}` : m.title}</small>
+              ${learning ? `<span class="nav-mod-bar"><i style="width:${(doneDays / m.days.length) * 100}%"></i></span>` : ''}
+            </span>
+            <span class="nt-chev">${I.chevDown}</span>
+          </button>
+          <div class="nt-collapse"><div class="nt-inner"><div class="nt-days">${m.days.map((n) => navDayHtml(days[n - 1])).join('')}</div></div></div>
+        </div>`;
     }).join('')}`;
 }
 
@@ -355,8 +392,7 @@ function renderDay() {
   $('#dayLabel').innerHTML = `<span class="crumb-mod" title="${mod.title}">Модуль ${mod.n} · ${mod.title}</span><span class="crumb-sep">›</span>День ${d.n}`;
   $('#dayTitle').textContent = d.title;
   $('#dayLead').textContent = `В этом уроке мы рассмотрим тему «${d.title.toLowerCase()}», практическое применение в разных предметах и возрастных группах.`;
-  $('#dayTime').textContent = fmtMin(TEMPLATE.reduce((s, e) => s + e.min, 0));
-  $('#planCount').textContent = `${TEMPLATE.length} элементов`;
+  $('#dayTime').textContent = `${TEMPLATE.length} шагов · ${fmtMin(TEMPLATE.reduce((s, e) => s + e.min, 0))}`;
 
   const firstUndone = d.done.findIndex((x) => !x);
   currentEl = firstUndone === -1 ? 0 : firstUndone;
@@ -379,12 +415,6 @@ function renderDay() {
       <span class="state ${complete ? 'done' : ''}">${complete ? 'День выполнен' : 'День будет отмечен автоматически'}</span>`;
     bindDay(d);
   }
-
-  $('#planList').innerHTML = TEMPLATE.map((el, j) => `
-    <li data-el="${j}" class="${!d.locked && j === currentEl && !d.done[j] ? 'current' : ''} ${d.done[j] ? 'done' : ''}">
-      <span class="dot">${d.done[j] ? I.check : ''}</span>
-      <span>${el.name}<small>${el.min} минут</small></span>
-    </li>`).join('');
 }
 
 function render() {
@@ -577,36 +607,64 @@ $('#moduleTabs').addEventListener('click', (e) => {
   const tab = e.target.closest('.mod-tab');
   if (tab) goToModule(MODULES[+tab.dataset.mod - 1]);
 });
-$('#navModules').addEventListener('click', (e) => {
-  const item = e.target.closest('[data-mod]');
-  if (!item) return;
-  e.preventDefault();
-  goToModule(MODULES[+item.dataset.mod - 1]);
-  closeMenu();
-  $('.days').scrollIntoView({ behavior: 'smooth', block: 'start' });
-});
-$('#prevDay').addEventListener('click', () => { if (selected > 1) { selected--; render(); } });
-$('#nextDay').addEventListener('click', () => { if (selected < days.length) { selected++; render(); } });
-
-// План дня
-$('#planToggle').addEventListener('click', (e) => {
-  const hidden = $('#plan').classList.toggle('hidden');
-  e.currentTarget.classList.toggle('collapsed', hidden);
-  e.currentTarget.querySelector('span').textContent = hidden ? 'Показать план дня' : 'Скрыть план дня';
-});
-$('#planList').addEventListener('click', (e) => {
-  const li = e.target.closest('li');
-  const el = li && $('#el-' + li.dataset.el);
+// Раскрыть шаг дня в ленте и подсветить его
+function focusStep(j) {
+  const el = $('#el-' + j);
   if (!el) return;
   setOpen(el, true);
   el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   el.classList.add('focus');
   setTimeout(() => el.classList.remove('focus'), 1400);
+}
+
+function toggleNode(node, set, key) {
+  const open = node.classList.toggle('open');
+  open ? set.add(key) : set.delete(key);
+  node.querySelector(':scope > button').setAttribute('aria-expanded', open);
+}
+
+$('#navModules').addEventListener('click', (e) => {
+  const btn = e.target.closest('[data-act]');
+  if (!btn) return;
+  if (btn.dataset.act === 'mod') {
+    toggleNode(btn.parentElement, navOpen.mods, +btn.dataset.mod);
+  } else if (btn.dataset.act === 'day') {
+    const n = +btn.dataset.day;
+    if (n === selected) return toggleNode(btn.parentElement, navOpen.days, n);
+    selected = n;
+    render();
+    closeMenu();
+    $('.day-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } else if (btn.dataset.act === 'step') {
+    const n = +btn.dataset.day;
+    if (n !== selected) { selected = n; render(); }
+    closeMenu();
+    focusStep(+btn.dataset.el);
+  }
 });
+$('#prevDay').addEventListener('click', () => { if (selected > 1) { selected--; render(); } });
+$('#nextDay').addEventListener('click', () => { if (selected < days.length) { selected++; render(); } });
 
 // Мобильное меню
 const closeMenu = () => { $('#sidebar').classList.remove('open'); $('#backdrop').classList.remove('show'); };
 $('#burger').addEventListener('click', () => { $('#sidebar').classList.add('open'); $('#backdrop').classList.add('show'); });
 $('#backdrop').addEventListener('click', closeMenu);
+
+// Сворачивание меню на десктопе (запоминается в браузере)
+function setCollapsed(v) {
+  $('.layout').classList.toggle('collapsed', v);
+  const b = $('#collapseBtn');
+  b.setAttribute('aria-expanded', !v);
+  b.setAttribute('aria-label', v ? 'Развернуть меню' : 'Свернуть меню');
+  b.title = v ? 'Развернуть меню' : 'Свернуть меню';
+  try { localStorage.setItem('lms-sidebar-collapsed', v ? '1' : '0'); } catch {}
+}
+$('#collapseBtn').addEventListener('click', () => setCollapsed(!$('.layout').classList.contains('collapsed')));
+// в свёрнутом меню клик по «Мое обучение» снова его раскрывает
+$('#navLearning').addEventListener('click', (e) => {
+  e.preventDefault();
+  if ($('.layout').classList.contains('collapsed') && innerWidth > 900) setCollapsed(false);
+});
+try { if (localStorage.getItem('lms-sidebar-collapsed') === '1') setCollapsed(true); } catch {}
 
 render();
