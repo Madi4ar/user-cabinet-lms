@@ -86,7 +86,6 @@ svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width:
 .back svg { width: 16px; height: 16px; color: var(--primary); }
 
 .course-head { display: flex; align-items: center; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
-.course-thumb { width: 64px; height: 56px; border-radius: 8px; background: linear-gradient(135deg, var(--primary) 0%, #0b3954 100%); color: #fff; font-size: 7px; font-weight: 700; padding: 6px; display: flex; align-items: flex-end; }
 .course-meta h1 { margin: 0 0 4px; font-size: 20px; font-weight: 700; }
 .meta-row { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 13px; flex-wrap: wrap; }
 .meta-row i { width: 1px; height: 14px; background: var(--border); }
