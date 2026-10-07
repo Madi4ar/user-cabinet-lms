@@ -734,7 +734,7 @@ button.nav-mod { width: 100%; text-align: left; }
 }
 
 /* ---------- Лента колонкой по центру, как у Instagram на десктопе ---------- */
-:root { --feed-w: 760px; }
+:root { --feed-w: none; } /* лента на всю ширину, как блок «Модули и дни» */
 .day-card { background: none; border: 0; box-shadow: none; padding: 8px 0 0; }
 .day-main { max-width: var(--feed-w); margin: 0 auto; }
 .day-main h2 { font-size: 24px; }
