@@ -175,7 +175,7 @@ function navDayHtml(d) {
     <div class="nt-day ${st} ${open ? 'open' : ''} ${d.n === selected ? 'active' : ''}" data-day="${d.n}">
       <button class="nt-day-btn" data-act="day" data-day="${d.n}" aria-expanded="${open}" title="День ${d.n}. ${d.title}">
         <span class="nt-day-dot">${st === 'done' ? I.check : st === 'locked' ? I.lock : d.n}</span>
-        <span class="nt-day-text"><b>День ${d.n}${d.n === CURRENT_DAY && st !== 'done' ? ' · сегодня' : ''}</b><small>${d.title}</small></span>
+        <span class="nt-day-text"><b>День ${d.n}${d.n === CURRENT_DAY && st !== 'done' ? ' · сегодня' : ''}</b></span>
         <span class="nt-chev">${I.chevDown}</span>
       </button>
       <div class="nt-collapse"><div class="nt-inner"><div class="nt-steps">${navStepsHtml(d)}</div></div></div>
@@ -205,7 +205,6 @@ function renderNavModules(viewMod) {
             <span class="nav-mod-dot">${st === 'done' ? I.check : st === 'locked' ? I.lock : ''}</span>
             <span class="nav-mod-text">
               <b>Модуль ${m.n}</b>
-              <small>${learning ? `Сейчас: день ${learningDay.n} из ${days.length}` : m.title}</small>
               ${learning ? `<span class="nav-mod-bar"><i style="width:${(doneDays / m.days.length) * 100}%"></i></span>` : ''}
             </span>
             <span class="nt-chev">${I.chevDown}</span>
