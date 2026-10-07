@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beyim Ustaz LMS — Личный кабинет</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <a class="logo" href="#">
+        <span class="logo-icon"><svg viewBox="0 0 24 24"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v15H5.5A1.5 1.5 0 0 1 4 17.5zM13 4h5.5A1.5 1.5 0 0 1 20 5.5v12a1.5 1.5 0 0 1-1.5 1.5H13z"/></svg></span>
+        <span><b>Beyim Ustaz</b><small>LMS</small></span>
+      </a>
+      <nav class="nav">
+        <a class="nav-item active" href="#"><svg viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>Мое обучение</a>
+        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg>Мои курсы</a>
+        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Мероприятия</a>
+        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="6"/><circle cx="12" cy="10" r="2.5"/><path d="M8.5 15L7 21l5-2 5 2-1.5-6"/></svg>Сертификаты</a>
+        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Профиль</a>
+        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>Сообщения</a>
+        <a class="nav-item" href="#"><svg viewBox="0 0 24 24"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>Мои достижения</a>
+      </nav>
+      <a class="help" href="#">
+        <span class="help-icon">?</span>
+        <span><b>Нужна помощь?</b><small>Перейти в справочный центр</small></span>
+      </a>
+    </aside>
+    <div class="backdrop" id="backdrop"></div>
+
+    <div class="main">
+      <!-- Header -->
+      <header class="topbar">
+        <button class="icon-btn burger" id="burger" aria-label="Меню"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+        <label class="search">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+          <input type="search" placeholder="Поиск по курсам, материалам...">
+        </label>
+        <div class="topbar-right">
+          <button class="icon-btn" aria-label="Уведомления"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 21h4"/></svg><span class="badge">3</span></button>
+          <button class="icon-btn" aria-label="Помощь"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .8-1 1.5V14M12 17h.01"/></svg></button>
+          <div class="user">
+            <span class="avatar">ЕЕ</span>
+            <span class="user-info"><b>Ерлан Есенов</b><small>Слушатель</small></span>
+            <svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <a class="back" href="#"><svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>К курсу</a>
+
+        <section class="course-head">
+          <div class="course-thumb"><span>Формативное<br>оценивание</span></div>
+          <div class="course-meta">
+            <h1>Формативное оценивание</h1>
+            <div class="meta-row"><span>80 часов</span><i></i><span>10 учебных дней</span><span class="pill pill-green">В процессе</span></div>
+          </div>
+          <div class="progress">
+            <div class="ring" id="ring"><span id="ringText">72%</span></div>
+            <div><b>Ваш прогресс</b><small id="progressText">72 из 100 элементов</small></div>
+          </div>
+        </section>
+
+        <section class="days">
+          <div class="days-head">
+            <b>Истории дней</b>
+            <small>Нажмите на день, чтобы узнать, что вас ждёт</small>
+          </div>
+          <div class="days-row">
+            <button class="days-arrow" id="prevDay" aria-label="Предыдущий день"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+            <div class="days-list" id="daysList"></div>
+            <button class="days-arrow" id="nextDay" aria-label="Следующий день"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          </div>
+        </section>
+
+        <section class="day-card">
+          <div class="day-main">
+            <div class="day-top">
+              <span class="eyebrow" id="dayLabel">ДЕНЬ 4</span>
+              <button class="toggle-all" id="toggleAll">Развернуть все</button>
+            </div>
+            <h2 id="dayTitle"></h2>
+            <p class="lead" id="dayLead"></p>
+            <div id="elements"></div>
+            <div class="day-footer" id="dayFooter"></div>
+          </div>
+
+          <aside class="day-side">
+            <div class="time"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Примерное время: <span id="dayTime"></span></div>
+            <button class="plan-toggle" id="planToggle"><svg viewBox="0 0 24 24"><path d="M6 15l6-6 6 6"/></svg><span>Скрыть план дня</span></button>
+            <div class="plan" id="plan">
+              <div class="plan-head"><b>В этом дне</b><small id="planCount"></small></div>
+              <ol class="plan-list" id="planList"></ol>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Модальное окно теста -->
+  <div class="modal" id="quiz" hidden role="dialog" aria-modal="true" aria-labelledby="quizTitle" data-view="quiz">
+    <div class="modal-box">
+      <header class="quiz-head">
+        <span class="el-icon orange"><svg viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></svg></span>
+        <div class="quiz-title">
+          <span class="eyebrow" id="quizDay">ДЕНЬ 4 · ТЕСТ</span>
+          <h3 id="quizTitle">Проверьте свои знания</h3>
+        </div>
+        <span class="quiz-timer"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="quizTime">15:00</span></span>
+        <button class="icon-btn quiz-close" aria-label="Закрыть"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </header>
+      <div class="quiz-progress"><i id="quizBar"></i></div>
+
+      <div class="quiz-body">
+        <nav class="quiz-steps" id="quizSteps" aria-label="Вопросы"></nav>
+        <div class="quiz-viewport"><div class="quiz-track" id="quizTrack"></div></div>
+        <footer class="quiz-foot">
+          <button class="btn btn-outline" id="quizPrev"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg>Назад</button>
+          <span class="quiz-counter" id="quizCounter"></span>
+          <button class="btn" id="quizNext">Далее</button>
+        </footer>
+      </div>
+
+      <div class="quiz-result" id="quizResult"></div>
+    </div>
+  </div>
+
+  <!-- Просмотрщик сторис -->
+  <div class="sv" id="sv" hidden role="dialog" aria-modal="true" aria-label="История дня">
+    <div class="sv-backdrop"></div>
+    <button class="sv-nav sv-prev" aria-label="Предыдущий день"><svg viewBox="0 0 24 24"><path d="M15 6l-6 6 6 6"/></svg></button>
+    <div class="sv-stage" id="svStage"></div>
+    <button class="sv-nav sv-next" aria-label="Следующий день"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+  <script src="quiz.js"></script>
+  <script src="stories.js"></script>
+</body>
+</html>
